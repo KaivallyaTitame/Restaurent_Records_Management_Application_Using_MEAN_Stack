@@ -1,0 +1,48 @@
+<style>
+  /* Set the entire page's background image */
+  body {
+      background: url('https://plus.unsplash.com/premium_photo-1661883237884-263e8de8869b?q=80&w=2089&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') 
+      no-repeat center center fixed;
+      background-size: cover;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+  }
+  .card {
+      background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white */
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+      padding: 20px;
+  }
+</style>
+
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="text-center">
+                    <h1>Marvellous Restaurent Login Portal</h1>
+                    <h5>You can login here!</h5>
+                </div>
+                <form [formGroup]="loginForm" (ngSubmit)="logIn()"> 
+                    <div class="mb-3">
+                      <label class="form-label">Email address</label>
+                      <input formControlName="email" type="email" class="form-control" id="exampleInputEmail1" placeholder="Email address">
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Password</label>
+                      <input  formControlName="password"  type="password" class="form-control" id="exampleInputPassword1">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                  </form>
+                  <a style="color: blue; margin-top: 10px;" routerLink="/signup">New User? Click to Sign up</a>
+
+            </div>
+        </div>
+    </div>
+</div>
+</body>

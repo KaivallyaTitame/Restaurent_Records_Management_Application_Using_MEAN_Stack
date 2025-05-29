@@ -1,0 +1,155 @@
+
+
+<nav class="navbar navbar-light bg-primary">
+  <div class="container-fluid">
+    <h2>Marvellous Restaurant Record App</h2>
+    <div class="d-flex">
+      <!-- Add Restaurant Button -->
+      <button 
+        (click)="clickAddResto()" 
+        class="btn btn-success" 
+        type="button" 
+        data-bs-toggle="modal" 
+        data-bs-target="#exampleModal">
+        Add Restaurant
+      </button>
+      <!-- Logout Button -->
+      <button 
+        routerLink="/login" 
+        style="margin-left: 5px;" 
+        class="btn btn-danger" 
+        type="button">
+        Log Out
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Table displaying the restaurant data -->
+<table class="table mt-4">
+  <thead>
+    <tr>
+      <th scope="col">Restaurant Name</th>
+      <th scope="col">Restaurant Email</th>
+      <th scope="col">Restaurant Address</th>
+      <th scope="col">Restaurant Phone</th>
+      <th scope="col">Restaurant Services</th>
+      <th scope="col">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- Use async pipe to subscribe to the observable and render data -->
+    <tr *ngFor="let data of allRestaurentData$ | async">
+      <td>{{ data.name }}</td>
+      <td>{{ data.email }}</td>
+      <td>{{ data.address }}</td>
+      <td>{{ data.mobile }}</td>
+      <td>{{ data.services }}</td>
+      <td>
+        <!-- Edit Button -->
+        <button 
+          (click)="onEditResto(data)" 
+          class="btn btn-info btn-sm" 
+          type="button" 
+          data-bs-toggle="modal" 
+          data-bs-target="#exampleModal">
+          Edit
+        </button>
+        <!-- Delete Button -->
+        <button 
+        (click)="deleteResto(data._id!)" 
+        class="btn btn-danger btn-sm">
+        Delete
+      </button>        
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- Modal for Add/Update Restaurant -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add/Update Restaurant</h5>
+        <button 
+          type="button" 
+          class="btn-close" 
+          data-bs-dismiss="modal" 
+          aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="formValue">
+          <div class="mb-3">
+            <label class="form-label">Name</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              formControlName="name" 
+              placeholder="Restaurant Name" 
+              required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input 
+              type="email" 
+              class="form-control" 
+              formControlName="email" 
+              placeholder="abcd@gmail.com" 
+              required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Address</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              formControlName="address" 
+              placeholder="123, Abc Road" 
+              required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Mobile</label>
+            <input 
+              type="number" 
+              class="form-control" 
+              formControlName="mobile" 
+              placeholder="+91-1234567890" 
+              required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Services</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              formControlName="services" 
+              placeholder="Coffee, Tea, Snacks" 
+              required>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button 
+          type="button" 
+          class="btn btn-secondary" 
+          data-bs-dismiss="modal" 
+          id="close">
+          Close
+        </button>
+        <button 
+          *ngIf="showAdd" 
+          type="button" 
+          class="btn btn-primary" 
+          (click)="addRestaurent()">
+          Add Details
+        </button>
+        <button 
+          *ngIf="showBtn" 
+          type="button" 
+          class="btn btn-primary" 
+          (click)="updateResto()">
+          Update
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
