@@ -3,12 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { RestaurentData } from '../restaurent-dash/restaurent.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ApiService {
-  private baseUrl = 'http://localhost:5100/restaurents'; // Base URL for the API
+  private baseUrl = environment.baseUrl;
 
   constructor(private _http: HttpClient) {}
 

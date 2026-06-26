@@ -1,28 +1,51 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const { MongoClient, ObjectId } = require('mongodb');
 
-const URL = "mongodb://localhost:27017";
+const URL = process.env.MONGODB_URI || "mongodb://localhost:27017";
 const client = new MongoClient(URL);
 
 const eobj = express();
-const port = 5100;
+const port = process.env.PORT || 5100;
+
+let isConnected = false;
 
 // Middleware
 eobj.use(express.json());
+
+// CORS Configuration - supports both development and production
 eobj.use(cors({
-  origin: 'http://localhost:4200',
+  origin: function(origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    // Allow all localhost and 127.0.0.1 origins for development
+    if (origin.includes('localhost') || origin.includes('127.0.0.1') || origin.endsWith('.vercel.app')) {
+      callback(null, true);
+    } else {
+      callback(null, true); // Allow all origins for now
+    }
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Accept']
+  allowedHeaders: ['Content-Type', 'Accept'],
+  credentials: true
 }));
 
 // MongoDB Connection Helper
 async function GetConnection() {
-  if (!client.isConnected()) {
-    await client.connect();
+  try {
+    if (!isConnected) {
+      await client.connect();
+      isConnected = true;
+      console.log('Connected to MongoDB successfully');
+    }
+    const db = client.db("MEAN_Project");
+    return db.collection("Restaurent");
+  } catch (error) {
+    console.error('MongoDB connection error:', error);
+    throw error;
   }
-  const db = client.db("MEAN_Project");
-  return db.collection("Restaurent");
 }
 
 // Default Route

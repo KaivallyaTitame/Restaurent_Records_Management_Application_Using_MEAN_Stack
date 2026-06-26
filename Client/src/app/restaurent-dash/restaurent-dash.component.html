@@ -1,153 +1,217 @@
-
-
-<nav class="navbar navbar-light bg-primary">
-  <div class="container-fluid">
-    <h2>Marvellous Restaurant Record App</h2>
-    <div class="d-flex">
-      <!-- Add Restaurant Button -->
-      <button 
-        (click)="clickAddResto()" 
-        class="btn btn-success" 
-        type="button" 
-        data-bs-toggle="modal" 
-        data-bs-target="#exampleModal">
-        Add Restaurant
-      </button>
-      <!-- Logout Button -->
-      <button 
-        routerLink="/login" 
-        style="margin-left: 5px;" 
-        class="btn btn-danger" 
-        type="button">
-        Log Out
-      </button>
-    </div>
-  </div>
-</nav>
-
-<!-- Table displaying the restaurant data -->
-<table class="table mt-4">
-  <thead>
-    <tr>
-      <th scope="col">Restaurant Name</th>
-      <th scope="col">Restaurant Email</th>
-      <th scope="col">Restaurant Address</th>
-      <th scope="col">Restaurant Phone</th>
-      <th scope="col">Restaurant Services</th>
-      <th scope="col">Action</th>
-    </tr>
-  </thead>
-  <tbody>
-    <!-- Use async pipe to subscribe to the observable and render data -->
-    <tr *ngFor="let data of allRestaurentData$ | async">
-      <td>{{ data.name }}</td>
-      <td>{{ data.email }}</td>
-      <td>{{ data.address }}</td>
-      <td>{{ data.mobile }}</td>
-      <td>{{ data.services }}</td>
-      <td>
-        <!-- Edit Button -->
+<div class="app-container">
+  <!-- Modern Header -->
+  <nav class="navbar navbar-expand-lg navbar-dark modern-navbar">
+    <div class="container-fluid px-4">
+      <div class="navbar-brand d-flex align-items-center">
+        <div class="brand-icon">🍽️</div>
+        <h2 class="mb-0 ms-2">Restaurant Manager</h2>
+      </div>
+      <div class="d-flex gap-2">
         <button 
-          (click)="onEditResto(data)" 
-          class="btn btn-info btn-sm" 
+          (click)="clickAddResto()" 
+          class="btn btn-add" 
           type="button" 
           data-bs-toggle="modal" 
           data-bs-target="#exampleModal">
-          Edit
+          <span class="btn-icon">+</span> Add Restaurant
         </button>
-        <!-- Delete Button -->
         <button 
-        (click)="deleteResto(data._id!)" 
-        class="btn btn-danger btn-sm">
-        Delete
-      </button>        
-      </td>
-    </tr>
-  </tbody>
-</table>
+          routerLink="/login" 
+          class="btn btn-logout" 
+          type="button">
+          <span class="btn-icon">🚪</span> Log Out
+        </button>
+      </div>
+    </div>
+  </nav>
 
-<!-- Modal for Add/Update Restaurant -->
+  <!-- Main Content -->
+  <div class="container-fluid px-4 py-4">
+    <div class="content-wrapper">
+      <!-- Stats Cards -->
+      <div class="stats-section mb-4">
+        <div class="stat-card">
+          <div class="stat-icon">📊</div>
+          <div class="stat-info">
+            <h3>{{ (allRestaurentData$ | async)?.length || 0 }}</h3>
+            <p>Total Restaurants</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table Card -->
+      <div class="table-card">
+        <div class="table-header">
+          <h3 class="table-title">
+            <span class="title-icon">📋</span> Restaurant Records
+          </h3>
+        </div>
+        
+        <div class="table-responsive">
+          <table class="table modern-table">
+            <thead>
+              <tr>
+                <th scope="col"><span class="th-icon">🏪</span> Name</th>
+                <th scope="col"><span class="th-icon">📧</span> Email</th>
+                <th scope="col"><span class="th-icon">📍</span> Address</th>
+                <th scope="col"><span class="th-icon">📱</span> Phone</th>
+                <th scope="col"><span class="th-icon">⚙️</span> Services</th>
+                <th scope="col" class="text-center"><span class="th-icon">🎯</span> Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let data of allRestaurentData$ | async; let i = index" class="table-row">
+                <td class="fw-semibold text-primary">{{ data.name }}</td>
+                <td>{{ data.email }}</td>
+                <td>{{ data.address }}</td>
+                <td>{{ data.mobile }}</td>
+                <td><span class="badge-services">{{ data.services }}</span></td>
+                <td class="text-center">
+                  <div class="action-buttons">
+                    <button 
+                      (click)="onEditResto(data)" 
+                      class="btn btn-edit" 
+                      type="button" 
+                      data-bs-toggle="modal" 
+                      data-bs-target="#exampleModal"
+                      title="Edit Restaurant">
+                      ✏️ Edit
+                    </button>
+                    <button 
+                      (click)="deleteResto(data._id!)" 
+                      class="btn btn-delete"
+                      title="Delete Restaurant">
+                      🗑️ Delete
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr *ngIf="(allRestaurentData$ | async)?.length === 0" class="empty-state">
+                <td colspan="6" class="text-center py-5">
+                  <div class="empty-icon">📭</div>
+                  <p class="empty-text">No restaurants found. Add your first restaurant to get started!</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modern Modal for Add/Update Restaurant -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Add/Update Restaurant</h5>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content modern-modal">
+      <div class="modal-header modern-modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">
+          <span class="modal-icon">{{ showAdd ? '➕' : '✏️' }}</span>
+          {{ showAdd ? 'Add New Restaurant' : 'Update Restaurant' }}
+        </h5>
         <button 
           type="button" 
-          class="btn-close" 
+          class="btn-close btn-close-white" 
           data-bs-dismiss="modal" 
           aria-label="Close"></button>
       </div>
-      <div class="modal-body">
+      <div class="modal-body modern-modal-body">
         <form [formGroup]="formValue">
-          <div class="mb-3">
-            <label class="form-label">Name</label>
+          <div class="mb-4">
+            <label class="form-label modern-label">
+              <span class="label-icon">🏪</span> Restaurant Name
+            </label>
             <input 
               type="text" 
-              class="form-control" 
+              class="form-control modern-input" 
               formControlName="name" 
-              placeholder="Restaurant Name" 
+              placeholder="Enter restaurant name" 
               required>
+            <div *ngIf="formValue.get('name')?.invalid && formValue.get('name')?.touched" class="text-danger small mt-1">
+              Name is required
+            </div>
           </div>
-          <div class="mb-3">
-            <label class="form-label">Email</label>
+          <div class="mb-4">
+            <label class="form-label modern-label">
+              <span class="label-icon">📧</span> Email Address
+            </label>
             <input 
               type="email" 
-              class="form-control" 
+              class="form-control modern-input" 
               formControlName="email" 
-              placeholder="abcd@gmail.com" 
+              placeholder="restaurant@example.com" 
               required>
+            <div *ngIf="formValue.get('email')?.invalid && formValue.get('email')?.touched" class="text-danger small mt-1">
+              Valid email is required
+            </div>
           </div>
-          <div class="mb-3">
-            <label class="form-label">Address</label>
+          <div class="mb-4">
+            <label class="form-label modern-label">
+              <span class="label-icon">📍</span> Address
+            </label>
             <input 
               type="text" 
-              class="form-control" 
+              class="form-control modern-input" 
               formControlName="address" 
-              placeholder="123, Abc Road" 
+              placeholder="123, Main Street, City" 
               required>
+            <div *ngIf="formValue.get('address')?.invalid && formValue.get('address')?.touched" class="text-danger small mt-1">
+              Address is required
+            </div>
           </div>
-          <div class="mb-3">
-            <label class="form-label">Mobile</label>
-            <input 
-              type="number" 
-              class="form-control" 
-              formControlName="mobile" 
-              placeholder="+91-1234567890" 
-              required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Services</label>
+          <div class="mb-4">
+            <label class="form-label modern-label">
+              <span class="label-icon">📱</span> Mobile Number
+            </label>
             <input 
               type="text" 
-              class="form-control" 
-              formControlName="services" 
-              placeholder="Coffee, Tea, Snacks" 
+              class="form-control modern-input" 
+              formControlName="mobile" 
+              placeholder="1234567890" 
               required>
+            <div *ngIf="formValue.get('mobile')?.invalid && formValue.get('mobile')?.touched" class="text-danger small mt-1">
+              Valid 10-digit mobile number is required
+            </div>
+          </div>
+          <div class="mb-4">
+            <label class="form-label modern-label">
+              <span class="label-icon">⚙️</span> Services Offered
+            </label>
+            <input 
+              type="text" 
+              class="form-control modern-input" 
+              formControlName="services" 
+              placeholder="Dine-in, Takeaway, Delivery" 
+              required>
+            <div *ngIf="formValue.get('services')?.invalid && formValue.get('services')?.touched" class="text-danger small mt-1">
+              Services are required
+            </div>
           </div>
         </form>
       </div>
-      <div class="modal-footer">
+      <div class="modal-footer modern-modal-footer">
         <button 
           type="button" 
-          class="btn btn-secondary" 
+          class="btn btn-cancel" 
           data-bs-dismiss="modal" 
           id="close">
-          Close
+          Cancel
         </button>
         <button 
           *ngIf="showAdd" 
           type="button" 
-          class="btn btn-primary" 
-          (click)="addRestaurent()">
-          Add Details
+          class="btn btn-save" 
+          (click)="addRestaurent()"
+          [disabled]="formValue.invalid">
+          <span class="btn-icon">✓</span> Add Restaurant
         </button>
         <button 
           *ngIf="showBtn" 
           type="button" 
-          class="btn btn-primary" 
-          (click)="updateResto()">
-          Update
+          class="btn btn-save" 
+          (click)="updateResto()"
+          [disabled]="formValue.invalid">
+          <span class="btn-icon">✓</span> Update Restaurant
         </button>
       </div>
     </div>
